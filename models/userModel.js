@@ -12,5 +12,5 @@ const model = mongoose.model("users", schema);
 
 module.exports = model;
 
-//backend= npm i socket.io
-//frontend= npm i socket.io-client
+//backend  = npm i socket.io
+//frontend = npm i socket.io-client

@@ -1,5 +1,4 @@
 const express = require("express");
-const res = require("express/lib/response");
 const app = express();
 const userRouter = require("./routers/userRouter");
 
@@ -9,11 +8,21 @@ const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["https//localhost:3000"],
+    origin: ["http://localhost:3000","http://192.168.2.172:3000"],
   },
 });
 
+// receiving event
+io.on("connection", (socket) => {
+  console.log("client connected");
 
+  //  do all operation after connection here
+  socket.on("sendmsg", (msg) => {
+    console.log(msg);
+    msg.sent = false;
+    socket.broadcast.emit("recmsg", msg);
+  });
+});
 
 const port = 5000;
 
@@ -30,21 +39,21 @@ app.get("/", (req, res) => {
   res.send("Request processed on /");
 });
 
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
   // for the server
   console.log("request on /home");
   // for the client
   res.send("Request processed on /home");
 });
 
-app.get("/", (req, res) => {
+app.get("/add", (req, res) => {
   // for the server
   console.log("request on /add");
   // for the client
   res.send("Request processed on /add");
 });
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log("server started");
 });
 
